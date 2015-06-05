@@ -25,6 +25,9 @@ See the scripts under the <tt>lib/anemone/cli</tt> directory for examples of sev
 * nokogiri
 * robots
 
+== Note
+* In this fork are applied runa/anemone patch and wordtracked/anemone
+
 == Development
 To test and develop this gem, additional requirements are:
 * rspec
