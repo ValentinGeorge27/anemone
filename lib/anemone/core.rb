@@ -76,7 +76,7 @@ module Anemone
     def initialize(urls, opts = {})
       @urls = [urls].flatten.map{ |url| url.is_a?(URI) ? url : URI(url) }
       @urls.each{ |url| url.path = '/' if url.path.empty? }
-      @valid_domains = @urls.map{|u| [u.host,u.host.gsub(/^(?:(?>[a-z0-9-]*\.)+?|)([a-z0-9-]+\.(?>[a-z]*(?>\.[a-z]{2})?))$/ix,'\1')]}.flatten.compact.uniq
+      @valid_domains = @urls.map{|u| [u.host,u.host.gsub(/^www\./,'.')]}.flatten.compact.uniq
 
       @tentacles = []
       @on_every_page_blocks = []
