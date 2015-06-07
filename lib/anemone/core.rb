@@ -57,7 +57,7 @@ module Anemone
       # HTTP read timeout in seconds
       :read_timeout => nil,
       # Crawl subdomains?
-      :crawl_subdomains => false
+      :crawl_subdomains => false,
     }
 
     # Create setter methods for all options to be called from the crawl block
