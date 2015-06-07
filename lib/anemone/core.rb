@@ -28,6 +28,8 @@ module Anemone
     DEFAULT_OPTS = {
       # run 4 Tentacle threads to fetch pages
       :threads => 4,
+      # Prevent page_queue from using excessive RAM. Can indirectly limit rate of crawling. You'll additionally want to use discard_page_bodies and/or a non-memory 'storage' option
+      :max_page_queue_size => 100,
       # disable verbose output
       :verbose => false,
       # don't throw away the page response body after scanning it for links
@@ -74,7 +76,7 @@ module Anemone
     def initialize(urls, opts = {})
       @urls = [urls].flatten.map{ |url| url.is_a?(URI) ? url : URI(url) }
       @urls.each{ |url| url.path = '/' if url.path.empty? }
-      @valid_domains = @urls.map{|u| [u.host,u.host.gsub(/^www\./,'.')]}.flatten.compact.uniq
+      @valid_domains = @urls.map{|u| [u.host, PublicSuffix.parse(URI.parse(URI.encode(u).to_s).host).domain]}.flatten.compact.uniq
 
       @tentacles = []
       @on_every_page_blocks = []
@@ -155,7 +157,7 @@ module Anemone
       return if @urls.empty?
 
       link_queue = Queue.new
-      page_queue = Queue.new
+      page_queue = SizedQueue.new(@opts[:max_page_queue_size])
 
       @opts[:threads].times do
         @tentacles << Thread.new { Tentacle.new(link_queue, page_queue, @opts).run }
@@ -268,7 +270,7 @@ module Anemone
     end
 
     def in_allowed_subdomain?(link)
-      opts[:crawl_subdomains] and @valid_domains.find{|domain| link.host.end_with?(domain)}
+      opts[:crawl_subdomains] and @valid_domains.find{|domain| PublicSuffix.parse(URI.parse(URI.encode(link).to_s).host.eql?(domain)).domain}
     end
 
     #
