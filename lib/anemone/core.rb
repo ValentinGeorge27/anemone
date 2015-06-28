@@ -271,7 +271,7 @@ module Anemone
     end
 
     def in_allowed_subdomain?(link)
-      opts[:crawl_subdomains] and @valid_domains.find{|domain| PublicSuffix.parse(URI.parse(URI.encode(link.url.to_s)).host).subdomain.include?(domain.to_s)}
+      opts[:crawl_subdomains] and @valid_domains.find{|domain| PublicSuffix.parse(URI.parse(URI.encode(link.to_s)).host).subdomain.include?(domain.to_s)}
     end
 
     #
