@@ -270,7 +270,7 @@ module Anemone
     end
 
     def in_allowed_subdomain?(link)
-      opts[:crawl_subdomains] and @valid_domains.find{|domain| URI.parse(URI.encode(link.to_s)).host.eql?(domain)}
+      opts[:crawl_subdomains] and @valid_domains.find{|domain| URI.parse(URI.encode(link.to_s)).host.include?(domain)}
     end
 
     #
